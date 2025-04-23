@@ -14,6 +14,12 @@ docker-compose up --build
 - Custo estimado por 1000 tokens (OpenAI): ~\$0.0004
 - Tempo médio de resposta: ~2s
 
+## 🧪 Exemplos de uso
+- Pergunta: "Qual o preço atual do Bitcoin?"
+  - Usa API pública da CoinGecko
+- Pergunta: "O que é o Bitcoin?"
+  - Usa vectorDB local (RAG)
+
 ## 🛠️ Tecnologias
-LangChain, LangGraph, Chroma, SQLite, Docker
+LangChain, LangGraph, Chroma, SQLite, Docker, Streamlit
 """
