@@ -1,6 +1,5 @@
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
-from langchain.document_loaders import TextLoader
 import os
 
 os.environ["OPENAI_API_KEY"] = "sua-chave-openai"
