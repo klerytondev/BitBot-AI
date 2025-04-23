@@ -2,7 +2,7 @@
 # GenAI Agent com API pública, RAG e VectorDB
 
 ## 💡 Visão Geral
-Agente que consulta dados da CoinGecko, gera embeddings, armazena no SQLite + ChromaDB e responde perguntas via RAG.
+Agente que consulta dados da CoinGecko, gera embeddings, armazena no SQLite + ChromaDB e responde perguntas via RAG ou API, conforme decisão da IA.
 
 ## 🚀 Como Rodar
 ```bash
