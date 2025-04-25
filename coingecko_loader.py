@@ -28,12 +28,21 @@ def extrair_nome_cripto(consulta: str) -> str:
     return None  # Retorna None se nenhuma criptomoeda for encontrada
 
 def preco_atual(cripto="bitcoin"):
+    criptos_conhecidas = ["bitcoin", "ethereum", "dogecoin", "cardano", "solana", "ripple"]
+    if cripto not in criptos_conhecidas:
+        return f"A criptomoeda '{cripto}' não é suportada no momento."
+
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={cripto}&vs_currencies=usd"
-    r = requests.get(url)
-    if r.status_code == 200 and cripto in r.json():
-        preco = r.json()[cripto]['usd']
-        return f"O preço atual do {cripto.title()} é ${preco} USD."
-    return f"Não foi possível obter o preço atual do {cripto}."
+    try:
+        r = requests.get(url)
+        r.raise_for_status()  # Levanta uma exceção para códigos de status HTTP de erro
+        data = r.json()
+        if cripto in data:
+            preco = data[cripto]['usd']
+            return f"O preço atual do {cripto.title()} é ${preco} USD."
+        return f"Não foi possível encontrar informações de preço para {cripto}."
+    except requests.exceptions.RequestException as e:
+        return f"Erro ao acessar a API: {e}"
 
 def historico_preco_12_meses(cripto="bitcoin"):
     url = f"https://api.coingecko.com/api/v3/coins/{cripto}/market_chart?vs_currency=usd&days=365"
