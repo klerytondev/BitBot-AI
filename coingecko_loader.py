@@ -6,22 +6,26 @@ def buscar_cripto_info(consulta: str) -> str:
 
     if "preço" in consulta and "últimos 12 meses" in consulta:
         cripto = extrair_nome_cripto(consulta)
-        return historico_preco_12_meses(cripto)
+        if cripto:
+            return historico_preco_12_meses(cripto)
+        return "Não consegui identificar a criptomoeda na sua consulta."
 
     if "preço" in consulta or "cotação" in consulta:
         cripto = extrair_nome_cripto(consulta)
-        return preco_atual(cripto)
+        if cripto:
+            return preco_atual(cripto)
+        return "Não consegui identificar a criptomoeda na sua consulta."
 
     return "Não entendi sua consulta sobre criptos. Tente reformular."
 
 def extrair_nome_cripto(consulta: str) -> str:
-    # Simplesmente extrai a primeira palavra após "do" ou "da"
+    # Lista de criptomoedas conhecidas (pode ser expandida ou carregada dinamicamente)
+    criptos_conhecidas = ["bitcoin", "ethereum", "dogecoin", "cardano", "solana", "ripple"]
     palavras = consulta.split()
-    for i, p in enumerate(palavras):
-        if p in ["do", "da", "de"]:
-            if i+1 < len(palavras):
-                return palavras[i+1]
-    return "bitcoin"  # fallback
+    for palavra in palavras:
+        if palavra in criptos_conhecidas:
+            return palavra
+    return None  # Retorna None se nenhuma criptomoeda for encontrada
 
 def preco_atual(cripto="bitcoin"):
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={cripto}&vs_currencies=usd"
