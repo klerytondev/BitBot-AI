@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 
-def buscar_info_completa(consulta: str) -> str:
+def buscar_cripto_info(consulta: str) -> str:
     consulta = consulta.lower()
 
     if "preço" in consulta and "últimos 12 meses" in consulta:
