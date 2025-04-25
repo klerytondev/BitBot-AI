@@ -4,7 +4,7 @@ from langchain.llms import OpenAI
 from datetime import datetime
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
-from api_loader.coingecko_loader import buscar_cripto_info
+from coingecko_loader import buscar_cripto_info
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 import requests
@@ -14,15 +14,9 @@ from embed_and_store import inserir_embeds
 @tool
 def buscar_na_api(consulta: str) -> str:
     resposta = buscar_cripto_info(consulta)
-    inserir_embeds(resposta)
+    if resposta:
+        inserir_embeds(resposta)  # Salva a resposta no banco vetorizado
     return resposta
-
-@tool
-def buscar_no_vector(consulta: str) -> str:
-    db = Chroma(persist_directory="db/chroma", embedding_function=OpenAIEmbeddings())
-    retriever = db.as_retriever()
-    docs = retriever.get_relevant_documents(consulta)
-    return docs[0].page_content if docs else "Sem resposta encontrada no banco vetorial."
 
 @tool
 def buscar_historico_preco(cripto: str) -> str:
@@ -42,10 +36,20 @@ def buscar_historico_preco(cripto: str) -> str:
     data_inicial = datetime.fromtimestamp(prices[0][0] / 1000).strftime("%d/%m/%Y")
     data_final = datetime.fromtimestamp(prices[-1][0] / 1000).strftime("%d/%m/%Y")
 
-    return (
+    resposta = (
         f"De {data_inicial} até {data_final}, o preço do {cripto} variou "
         f"de ${preco_inicial:.2f} para ${preco_final:.2f}, uma mudança de {variacao:.2f}%."
     )
+
+    inserir_embeds(resposta)  # Salva a resposta no banco vetorizado
+    return resposta
+
+@tool
+def buscar_no_vector(consulta: str) -> str:
+    db = Chroma(persist_directory="db/chroma", embedding_function=OpenAIEmbeddings())
+    retriever = db.as_retriever()
+    docs = retriever.get_relevant_documents(consulta)
+    return docs[0].page_content if docs else "Sem resposta encontrada no banco vetorial."
 
 # LLM base
 llm = OpenAI()
