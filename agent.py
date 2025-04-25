@@ -95,13 +95,13 @@ builder.add_edge("historico", END)
 graph = builder.compile()
 
 def executar_agente(pergunta):
+    # Executa o LangGraph para determinar e executar os nós necessários
     resultado = graph.invoke({"input": pergunta})
     
-    resposta = resultado.get("resposta")
-    rota = resultado.get("rota")  # Adicione isso na saída do nó "decidir"
-
-    # Salva a resposta gerada pela API no vetor
-    if rota == "api" and resposta:
-        inserir_embeds(resposta)
-
-    return resposta
+    # Consulta o banco vetorizado com a pergunta original
+    db = Chroma(persist_directory="db/chroma", embedding_function=OpenAIEmbeddings())
+    retriever = db.as_retriever()
+    docs = retriever.get_relevant_documents(pergunta)
+    
+    # Retorna a resposta do banco vetorizado ou uma mensagem padrão
+    return docs[0].page_content if docs else "Sem resposta encontrada no banco vetorial."
