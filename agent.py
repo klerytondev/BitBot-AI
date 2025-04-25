@@ -57,9 +57,9 @@ llm = OpenAI()
 # Prompt de decisão
 prompt = PromptTemplate.from_template("""
 Dada a pergunta: {input}, diga se a resposta deve vir de:
-- "historico" (caso fale sobre desempenho ao longo do tempo),
-- "api" (para preço atual),
-- "vector" (para perguntas explicativas, como "o que é Bitcoin").
+- "historico" (caso fale sobre desempenho ao longo do tempo, como "Qual foi a variação do Bitcoin no último ano?"),
+- "api" (para preço atual, como "Qual é o preço atual do Ethereum?"),
+- "vector" (para perguntas explicativas, como "O que é Bitcoin?").
 
 Responda apenas com: historico, api ou vector.
 """)
