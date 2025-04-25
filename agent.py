@@ -4,15 +4,19 @@ from langchain.llms import OpenAI
 from datetime import datetime
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
-from coingecko_loader import buscar_cripto_info
+from coingecko_loader import (
+    buscar_cripto_info,
+    preco_atual,
+    historico_preco_12_meses
+)
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
-import requests
 import os
 from embed_and_store import inserir_embeds
 
 @tool
 def buscar_na_api(consulta: str) -> str:
+    """Busca informações de preço atual ou histórico de uma criptomoeda usando a API do pacote coingecko_loader."""
     resposta = buscar_cripto_info(consulta)
     if resposta:
         inserir_embeds(resposta)  # Salva a resposta no banco vetorizado
@@ -20,28 +24,18 @@ def buscar_na_api(consulta: str) -> str:
 
 @tool
 def buscar_historico_preco(cripto: str) -> str:
-    """Busca a variação de preço de uma cripto nos últimos 12 meses."""
-    url = f"https://api.coingecko.com/api/v3/coins/{cripto}/market_chart?vs_currency=usd&days=365"
-    r = requests.get(url)
-    if r.status_code != 200:
-        return f"Erro ao buscar dados de {cripto}: {r.text}"
-    
-    data = r.json()
-    prices = data["prices"]  # Lista de [timestamp, preço]
-    
-    preco_inicial = prices[0][1]
-    preco_final = prices[-1][1]
-    variacao = ((preco_final - preco_inicial) / preco_inicial) * 100
+    """Busca o histórico de preços de uma criptomoeda nos últimos 12 meses usando a API do pacote coingecko_loader."""
+    resposta = historico_preco_12_meses(cripto)
+    if resposta:
+        inserir_embeds(resposta)  # Salva a resposta no banco vetorizado
+    return resposta
 
-    data_inicial = datetime.fromtimestamp(prices[0][0] / 1000).strftime("%d/%m/%Y")
-    data_final = datetime.fromtimestamp(prices[-1][0] / 1000).strftime("%d/%m/%Y")
-
-    resposta = (
-        f"De {data_inicial} até {data_final}, o preço do {cripto} variou "
-        f"de ${preco_inicial:.2f} para ${preco_final:.2f}, uma mudança de {variacao:.2f}%."
-    )
-
-    inserir_embeds(resposta)  # Salva a resposta no banco vetorizado
+@tool
+def buscar_preco_atual(cripto: str) -> str:
+    """Busca o preço atual de uma criptomoeda usando a API do pacote coingecko_loader."""
+    resposta = preco_atual(cripto)
+    if resposta:
+        inserir_embeds(resposta)  # Salva a resposta no banco vetorizado
     return resposta
 
 @tool
