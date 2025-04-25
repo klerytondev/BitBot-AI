@@ -45,14 +45,30 @@ def preco_atual(cripto="bitcoin"):
         return f"Erro ao acessar a API: {e}"
 
 def historico_preco_12_meses(cripto="bitcoin"):
+    criptos_conhecidas = ["bitcoin", "ethereum", "dogecoin", "cardano", "solana", "ripple"]
+    if cripto not in criptos_conhecidas:
+        return f"A criptomoeda '{cripto}' não é suportada no momento."
+
     url = f"https://api.coingecko.com/api/v3/coins/{cripto}/market_chart?vs_currency=usd&days=365"
-    r = requests.get(url)
-    if r.status_code == 200 and "prices" in r.json():
-        data = r.json()["prices"]
-        inicio = datetime.fromtimestamp(data[0][0] / 1000).strftime("%Y-%m-%d")
-        fim = datetime.fromtimestamp(data[-1][0] / 1000).strftime("%Y-%m-%d")
-        preco_inicio = round(data[0][1], 2)
-        preco_fim = round(data[-1][1], 2)
-        variacao = round(((preco_fim - preco_inicio) / preco_inicio) * 100, 2)
-        return f"De {inicio} a {fim}, o preço do {cripto.title()} variou de ${preco_inicio} para ${preco_fim}, uma variação de {variacao}%."
-    return f"Não foi possível obter o histórico de 12 meses para {cripto}."
+    try:
+        r = requests.get(url)
+        r.raise_for_status()  # Levanta uma exceção para códigos de status HTTP de erro
+        data = r.json()
+        if "prices" in data:
+            prices = data["prices"]
+            if len(prices) < 2:
+                return f"Dados insuficientes para calcular o histórico de 12 meses para {cripto}."
+
+            inicio = datetime.fromtimestamp(prices[0][0] / 1000).strftime("%Y-%m-%d")
+            fim = datetime.fromtimestamp(prices[-1][0] / 1000).strftime("%Y-%m-%d")
+            preco_inicio = round(prices[0][1], 2)
+            preco_fim = round(prices[-1][1], 2)
+
+            if preco_inicio == 0:
+                return f"Não foi possível calcular a variação percentual para {cripto} devido a dados inválidos."
+
+            variacao = round(((preco_fim - preco_inicio) / preco_inicio) * 100, 2)
+            return f"De {inicio} a {fim}, o preço do {cripto.title()} variou de ${preco_inicio} para ${preco_fim}, uma variação de {variacao}%."
+        return f"Não foi possível obter o histórico de 12 meses para {cripto}."
+    except requests.exceptions.RequestException as e:
+        return f"Erro ao acessar a API: {e}"
