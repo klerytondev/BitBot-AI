@@ -66,9 +66,8 @@ nodes = {
     "decidir": lambda state: {"input": state["input"], "rota": decision_chain.run(state["input"]).strip()},
     "api": lambda state: {"resposta": buscar_na_api.run(state["input"]), "fim": True},
     "vector": lambda state: {"resposta": buscar_no_vector.run(state["input"]), "fim": True},
-    "historico": lambda state: {
-        "resposta": buscar_historico_preco.run(state["input"]), "fim": True
-    },
+    "historico": lambda state: {"resposta": buscar_historico_preco.run(state["input"]), "fim": True},
+    "preco_atual": lambda state: {"resposta": buscar_preco_atual.run(state["input"]), "fim": True},  # Novo nó
 }
 
 builder = StateGraph()
