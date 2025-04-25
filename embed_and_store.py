@@ -4,6 +4,12 @@ import sqlite3
 import os
 import json
 
+# Verifica e cria o diretório 'db/' se necessário
+db_dir = "db/"
+if not os.path.exists(db_dir):
+    os.makedirs(db_dir)
+    print(f"Diretório '{db_dir}' criado com sucesso.")
+
 # Configuração da chave da API OpenAI
 os.environ["OPENAI_API_KEY"] = "sua-chave-openai"
 
