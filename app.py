@@ -1,5 +1,5 @@
 import streamlit as st
-from agent.agent import executar_agente
+from agent import executar_agente
 
 st.set_page_config(page_title="GenAI Agent com LangGraph", page_icon="🧠")
 st.title("🧠 GenAI Agent com API + RAG")

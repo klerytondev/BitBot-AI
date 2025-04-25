@@ -7,6 +7,8 @@ from langchain.prompts import PromptTemplate
 from api_loader.coingecko_loader import buscar_cripto_info
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
+import requests
+import os
 from embed_and_store import inserir_embeds
 
 @tool
