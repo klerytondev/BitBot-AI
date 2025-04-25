@@ -52,10 +52,11 @@ llm = OpenAI()
 prompt = PromptTemplate.from_template("""
 Dada a pergunta: {input}, diga se a resposta deve vir de:
 - "historico" (caso fale sobre desempenho ao longo do tempo, como "Qual foi a variação do Bitcoin no último ano?"),
-- "api" (para preço atual, como "Qual é o preço atual do Ethereum?"),
+- "api" (para informações gerais ou históricas, como "Qual é o preço atual do Ethereum?"),
+- "preco_atual" (para perguntas específicas sobre o preço atual, como "Qual é o preço atual do Bitcoin?"),
 - "vector" (para perguntas explicativas, como "O que é Bitcoin?").
 
-Responda apenas com: historico, api ou vector.
+Responda apenas com: historico, api, preco_atual ou vector.
 """)
 
 decision_chain = LLMChain(llm=llm, prompt=prompt)
