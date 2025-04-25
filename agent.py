@@ -93,7 +93,7 @@ graph = builder.compile()
 
 def executar_agente(pergunta):
     # Executa o LangGraph para determinar e executar os nós necessários
-    resultado = graph.invoke({"input": pergunta})
+    graph.invoke({"input": pergunta})  # Removida a atribuição à variável resultado
     
     # Consulta o banco vetorizado com a pergunta original
     db = Chroma(persist_directory="db/chroma", embedding_function=OpenAIEmbeddings())
