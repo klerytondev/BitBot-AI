@@ -74,17 +74,20 @@ builder = StateGraph()
 builder.add_node("decidir", nodes["decidir"])
 builder.add_node("api", nodes["api"])
 builder.add_node("vector", nodes["vector"])
-builder.add_node("historico", nodes["historico"])  # novo nó
+builder.add_node("historico", nodes["historico"])
+builder.add_node("preco_atual", nodes["preco_atual"])  # Adicionando o novo nó
 
 builder.set_entry_point("decidir")
 builder.add_conditional_edges("decidir", lambda x: x["rota"], {
     "api": "api",
     "vector": "vector",
-    "historico": "historico"
+    "historico": "historico",
+    "preco_atual": "preco_atual"  # Nova rota adicionada
 })
 builder.add_edge("api", END)
 builder.add_edge("vector", END)
 builder.add_edge("historico", END)
+builder.add_edge("preco_atual", END)  # Adicionando o nó final para preco_atual
 
 graph = builder.compile()
 
