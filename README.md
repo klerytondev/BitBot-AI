@@ -2,7 +2,7 @@
 # GenAI Agent com API pública, RAG e VectorDB
 
 ## 💡 Visão Geral
-Agente que consulta dados da CoinGecko, gera embeddings, armazena no SQLite + ChromaDB e responde perguntas via RAG.
+Agente que consulta dados da CoinGecko, gera embeddings, armazena no SQLite + ChromaDB e responde perguntas via RAG ou API, conforme decisão da IA.
 
 ## 🚀 Como Rodar
 ```bash
@@ -14,6 +14,12 @@ docker-compose up --build
 - Custo estimado por 1000 tokens (OpenAI): ~\$0.0004
 - Tempo médio de resposta: ~2s
 
+## 🧪 Exemplos de uso
+- Pergunta: "Qual o preço atual do Bitcoin?"
+  - Usa API pública da CoinGecko
+- Pergunta: "O que é o Bitcoin?"
+  - Usa vectorDB local (RAG)
+
 ## 🛠️ Tecnologias
-LangChain, LangGraph, Chroma, SQLite, Docker
+LangChain, LangGraph, Chroma, SQLite, Docker, Streamlit
 """
