@@ -91,9 +91,21 @@ builder.add_edge("preco_atual", END)  # Adicionando o nó final para preco_atual
 
 graph = builder.compile()
 
+
+def salvar_historico(pergunta: str, resposta: str):
+    """Salva a interação (pergunta e resposta) no banco vetorizado."""
+    db = Chroma(persist_directory="db/chroma", embedding_function=OpenAIEmbeddings())
+    db.add_texts([f"Pergunta: {pergunta}\nResposta: {resposta}"])
+
 def executar_agente(pergunta):
     # Executa o LangGraph para determinar e executar os nós necessários
-    graph.invoke({"input": pergunta})  # Removida a atribuição à variável resultado
+    resultado = graph.invoke({"input": pergunta})
+    
+    # Obtém a resposta gerada
+    resposta = resultado.get("resposta", "Sem resposta encontrada.")
+    
+    # Salva a interação no banco vetorizado
+    salvar_historico(pergunta, resposta)
     
     # Consulta o banco vetorizado com a pergunta original
     db = Chroma(persist_directory="db/chroma", embedding_function=OpenAIEmbeddings())
