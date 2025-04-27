@@ -82,12 +82,12 @@ builder.add_conditional_edges("decidir", lambda x: x["rota"], {
     "api": "api",
     "vector": "vector",
     "historico": "historico",
-    "preco_atual": "preco_atual"  # Nova rota adicionada
+    "preco_atual": "preco_atual" 
 })
 builder.add_edge("api", END)
 builder.add_edge("vector", END)
 builder.add_edge("historico", END)
-builder.add_edge("preco_atual", END)  # Adicionando o nó final para preco_atual
+builder.add_edge("preco_atual", END) 
 
 graph = builder.compile()
 
