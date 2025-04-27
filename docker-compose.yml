@@ -4,8 +4,9 @@ services:
     build: .
     volumes:
       - .:/app
+      - ./db:/app/db  # Volume para persistir o banco de dados
     env_file:
       - .env
     ports:
       - "8501:8501"
-    command: ["streamlit", "run", "app/main.py"]
+    command: ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
