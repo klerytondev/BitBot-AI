@@ -75,7 +75,7 @@ builder.add_node("decidir", nodes["decidir"])
 builder.add_node("api", nodes["api"])
 builder.add_node("vector", nodes["vector"])
 builder.add_node("historico", nodes["historico"])
-builder.add_node("preco_atual", nodes["preco_atual"])  # Adicionando o novo nó
+builder.add_node("preco_atual", nodes["preco_atual"]) 
 
 builder.set_entry_point("decidir")
 builder.add_conditional_edges("decidir", lambda x: x["rota"], {
