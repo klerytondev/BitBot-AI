@@ -1,16 +1,20 @@
+from langchain_community.llms import OpenAI
+from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain.prompts import PromptTemplate
+from langchain.schema.runnable import RunnableSequence
+
+from langgraph.graph.state import StateSchema
+
 from langgraph.graph import StateGraph, END
 from langchain.agents import tool
-from langchain.llms import OpenAI
 from datetime import datetime
 from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
 from coingecko_loader import (
     buscar_cripto_info,
     preco_atual,
     historico_preco_12_meses
 )
-from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import OpenAIEmbeddings
 import os
 from embed_and_store import inserir_embeds
 
@@ -60,7 +64,14 @@ Dada a pergunta: {input}, diga se a resposta deve vir de:
 Responda apenas com: historico, api, preco_atual ou vector.
 """)
 
-decision_chain = LLMChain(llm=llm, prompt=prompt)
+# Defina o schema do estado
+state_schema = StateSchema(
+    input={"input": str},
+    output={"resposta": str}
+)
+
+# Inicialize o StateGraph com o schema
+decision_chain = RunnableSequence([prompt, llm])
 
 # Estados do LangGraph
 nodes = {
