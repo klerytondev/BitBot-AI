@@ -40,6 +40,7 @@ def buscar_preco_atual(cripto: str) -> str:
 
 @tool
 def buscar_no_vector(consulta: str) -> str:
+    """Busca informações em um banco vetorizado (Chroma) usando embeddings OpenAI."""
     db = Chroma(persist_directory="db/chroma", embedding_function=OpenAIEmbeddings())
     retriever = db.as_retriever()
     docs = retriever.get_relevant_documents(consulta)
