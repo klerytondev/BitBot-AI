@@ -10,7 +10,7 @@ from coingecko_loader import (
     historico_preco_12_meses
 )
 from langchain_community.vectorstores import Chroma
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_community.embeddings import OpenAIEmbeddings
 import os
 from embed_and_store import inserir_embeds
 
