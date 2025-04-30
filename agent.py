@@ -75,13 +75,30 @@ Responda apenas com: historico, api, preco_atual ou vector.
 # Inicialize o StateGraph com o schema
 decision_chain = RunnableSequence(prompt, llm)
 
+# ...código existente...
+
 # Estados do LangGraph
 nodes = {
-    "decidir": lambda state: {"input": state["input"], "rota": decision_chain.run(state["input"]).strip()},
-    "api": lambda state: {"resposta": buscar_na_api.run(state["input"]), "fim": True},
-    "vector": lambda state: {"resposta": buscar_no_vector.run(state["input"]), "fim": True},
-    "historico": lambda state: {"resposta": buscar_historico_preco.run(state["input"]), "fim": True},
-    "preco_atual": lambda state: {"resposta": buscar_preco_atual.run(state["input"]), "fim": True},  # Novo nó
+    "decidir": lambda state: {
+        "input": state["input"],  # Garantimos que "input" está presente
+        "rota": decision_chain.run(state["input"]).strip()  # Executa a decisão
+    },
+    "api": lambda state: {
+        "resposta": buscar_na_api.run(state["input"]),  # Usa "input" para buscar na API
+        "fim": True
+    },
+    "vector": lambda state: {
+        "resposta": buscar_no_vector.run(state["input"]),  # Usa "input" para buscar no vetor
+        "fim": True
+    },
+    "historico": lambda state: {
+        "resposta": buscar_historico_preco.run(state["input"]),  # Usa "input" para buscar histórico
+        "fim": True
+    },
+    "preco_atual": lambda state: {
+        "resposta": buscar_preco_atual.run(state["input"]),  # Usa "input" para buscar preço atual
+        "fim": True
+    },
 }
 
 # builder = StateGraph()
@@ -112,7 +129,9 @@ def salvar_historico(pergunta: str, resposta: str):
     db = Chroma(persist_directory="db/chroma", embedding_function=OpenAIEmbeddings())
     db.add_texts([f"Pergunta: {pergunta}\nResposta: {resposta}"])
 
-def executar_agente(pergunta):
+
+def executar_agente(pergunta: str) -> str:
+    """Executa o agente com base na pergunta fornecida."""
     # Executa o LangGraph para determinar e executar os nós necessários
     resultado = graph.invoke({"input": pergunta})
     
