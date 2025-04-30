@@ -101,19 +101,19 @@ builder = StateGraph(AgentState)
 builder.add_node("decidir", nodes["decidir"])
 builder.add_node("api", nodes["api"])
 builder.add_node("vector", nodes["vector"])
-builder.add_node("buscar_historico", nodes["buscar_historico"])  # Atualizado
+builder.add_node("buscar_historico", nodes["buscar_historico"]) 
 builder.add_node("preco_atual", nodes["preco_atual"])
 
 builder.set_entry_point("decidir")
 builder.add_conditional_edges("decidir", lambda x: x["rota"], {
     "api": "api",
     "vector": "vector",
-    "historico": "buscar_historico",  # Atualizado
+    "historico": "buscar_historico", 
     "preco_atual": "preco_atual"
 })
 builder.add_edge("api", END)
 builder.add_edge("vector", END)
-builder.add_edge("buscar_historico", END)  # Atualizado
+builder.add_edge("buscar_historico", END) 
 builder.add_edge("preco_atual", END)
 
 graph = builder.compile()
