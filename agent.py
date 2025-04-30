@@ -4,7 +4,9 @@ from langchain_community.embeddings import OpenAIEmbeddings
 from langchain.prompts import PromptTemplate
 from langchain.schema.runnable import RunnableSequence
 
-from langgraph.graph.state import StateSchema
+from langgraph.graph import StateGraph
+
+from typing import TypedDict
 
 from langgraph.graph import StateGraph, END
 from langchain.agents import tool
@@ -17,6 +19,10 @@ from coingecko_loader import (
 )
 import os
 from embed_and_store import inserir_embeds
+
+class AgentState(TypedDict):
+    input: str
+    resposta: str
 
 @tool
 def buscar_na_api(consulta: str) -> str:
@@ -64,14 +70,8 @@ Dada a pergunta: {input}, diga se a resposta deve vir de:
 Responda apenas com: historico, api, preco_atual ou vector.
 """)
 
-# Defina o schema do estado
-state_schema = StateSchema(
-    input={"input": str},
-    output={"resposta": str}
-)
-
 # Inicialize o StateGraph com o schema
-decision_chain = RunnableSequence([prompt, llm])
+decision_chain = RunnableSequence(prompt, llm)
 
 # Estados do LangGraph
 nodes = {
@@ -82,7 +82,8 @@ nodes = {
     "preco_atual": lambda state: {"resposta": buscar_preco_atual.run(state["input"]), "fim": True},  # Novo nó
 }
 
-builder = StateGraph()
+# builder = StateGraph()
+builder = StateGraph(AgentState)
 builder.add_node("decidir", nodes["decidir"])
 builder.add_node("api", nodes["api"])
 builder.add_node("vector", nodes["vector"])
