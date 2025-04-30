@@ -23,6 +23,8 @@ from embed_and_store import inserir_embeds
 class AgentState(TypedDict):
     input: str
     resposta: str
+    rota: str  
+    historico: list[str] 
 
 @tool
 def buscar_na_api(consulta: str) -> str:
