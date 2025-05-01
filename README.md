@@ -64,5 +64,6 @@ docker-compose up --build
 4. Envie para a branch principal (`git push origin minha-feature`).
 5. Abra um Pull Request.
 
-## 📝 Licença
-Este projeto está licenciado sob a [MIT License](LICENSE).
+## Licença
+
+Este projeto está licenciado sob a [MIT License](license.txt). Sinta-se à vontade para usar, modificar e distribuir este software, desde que mantenha os créditos apropriados..
