@@ -62,7 +62,6 @@ def buscar_no_vector(consulta: str) -> str:
     return docs[0].page_content if docs else "Sem resposta encontrada no banco vetorial."
 
 
-# LLM base
 llm = OpenAI()
 
 # Prompt de decisão
@@ -93,7 +92,7 @@ nodes = {
         "resposta": buscar_no_vector.run(state["input"]),
         "fim": True
     },
-    "buscar_historico": lambda state: {  # Renomeado para evitar conflito
+    "buscar_historico": lambda state: { 
         "resposta": buscar_historico_preco.run(state["input"]),
         "fim": True
     },
