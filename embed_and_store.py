@@ -11,7 +11,7 @@ if not os.path.exists(db_dir):
     print(f"Diretório '{db_dir}' criado com sucesso.")
 
 # Configuração da chave da API OpenAI
-os.environ["OPENAI_API_KEY"] = "sua-chave-openai"
+os.environ["OPENAI_API_KEY"] = "OPENAI_API_KEY"
 
 # Caminho para o banco SQLite
 SQLITE_DB_PATH = "db/crypto_data.sqlite"
