@@ -39,12 +39,12 @@ langchain-community==0.3.23
 langchain-core==0.3.56
 langchain-openai==0.3.14
 langchain-text-splitters==0.3.8
-langgraph==0.4.0
-langgraph-api==0.1.23
-langgraph-checkpoint==2.0.24
+langgraph-checkpoint>=2.0.25,<3.0.0
+langgraph
+langgraph-api
+langgraph-prebuilt
+langgraph-runtime-inmem
 langgraph-cli==0.2.7
-langgraph-prebuilt==0.1.8
-langgraph-runtime-inmem==0.0.8
 langgraph-sdk==0.1.63
 langsmith==0.3.36
 MarkupSafe==3.0.2
