@@ -5,7 +5,8 @@ from langchain.prompts import PromptTemplate
 from langchain.schema.runnable import RunnableSequence
 
 from langgraph.graph import StateGraph, END
-from typing import TypedDict
+from pydantic import BaseModel, Field
+from typing import List
 from datetime import datetime
 from coingecko_loader import (
     buscar_cripto_info,
@@ -18,11 +19,12 @@ from embed_and_store import inserir_embeds
 from langchain.agents import tool
 
 
-class AgentState(TypedDict):
-    input: str
-    resposta: str
-    rota: str  
-    historico: list[str] 
+class AgentState(BaseModel):
+    input: str = Field(..., description="Pergunta ou consulta do usuário")
+    resposta: str = Field(default="", description="Resposta gerada pelo agente")
+    rota: str = Field(default="", description="Rota de decisão tomada pelo agente")
+    historico: List[str] = Field(default_factory=list, description="Histórico de interações")
+
 
 @tool
 def buscar_na_api(consulta: str) -> str:
@@ -32,6 +34,7 @@ def buscar_na_api(consulta: str) -> str:
         inserir_embeds(resposta)  # Salva a resposta no banco vetorizado
     return resposta
 
+
 @tool
 def buscar_historico_preco(cripto: str) -> str:
     """Busca o histórico de preços de uma criptomoeda nos últimos 12 meses usando a API do pacote coingecko_loader."""
@@ -39,6 +42,7 @@ def buscar_historico_preco(cripto: str) -> str:
     if resposta:
         inserir_embeds(resposta)  # Salva a resposta no banco vetorizado
     return resposta
+
 
 @tool
 def buscar_preco_atual(cripto: str) -> str:
@@ -48,6 +52,7 @@ def buscar_preco_atual(cripto: str) -> str:
         inserir_embeds(resposta)  # Salva a resposta no banco vetorizado
     return resposta
 
+
 @tool
 def buscar_no_vector(consulta: str) -> str:
     """Busca informações em um banco vetorizado (Chroma) usando embeddings OpenAI."""
@@ -55,6 +60,7 @@ def buscar_no_vector(consulta: str) -> str:
     retriever = db.as_retriever()
     docs = retriever.get_relevant_documents(consulta)
     return docs[0].page_content if docs else "Sem resposta encontrada no banco vetorial."
+
 
 # LLM base
 llm = OpenAI()
@@ -101,19 +107,19 @@ builder = StateGraph(AgentState)
 builder.add_node("decidir", nodes["decidir"])
 builder.add_node("api", nodes["api"])
 builder.add_node("vector", nodes["vector"])
-builder.add_node("buscar_historico", nodes["buscar_historico"]) 
+builder.add_node("buscar_historico", nodes["buscar_historico"])
 builder.add_node("preco_atual", nodes["preco_atual"])
 
 builder.set_entry_point("decidir")
 builder.add_conditional_edges("decidir", lambda x: x["rota"], {
     "api": "api",
     "vector": "vector",
-    "historico": "buscar_historico", 
+    "historico": "buscar_historico",
     "preco_atual": "preco_atual"
 })
 builder.add_edge("api", END)
 builder.add_edge("vector", END)
-builder.add_edge("buscar_historico", END) 
+builder.add_edge("buscar_historico", END)
 builder.add_edge("preco_atual", END)
 
 graph = builder.compile()
